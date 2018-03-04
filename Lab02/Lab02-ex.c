@@ -1,63 +1,61 @@
-nclude <reg51.h>
-#include <absacc.h>
-#define PORT_A XBYTE [0X9000]
-#define PORT_B XBYTE [0X9001]
-#define PORT_C XBYTE [0X9002]
-#define CON XBYTE [0X9003]
-#define D0 = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09}
-#define D1 = {0x00,0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80,0x90}
+#include <reg51.h>	// นำไฟล์ reg51.h เข้ามาในโปรแกรม
+#include <absacc.h>		// นำไฟล์ absacc.h เข้ามาในโปรแกรม
+#define PORT_A XBYTE [0X9000] //ประกาศ address Port A
+#define PORT_C XBYTE [0X9002] //ประกาศ address Port C
+#define CON XBYTE [0X9003] //ประกาศ address Control Port
+#define D0 = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09} // ประกาศค่าที่นำไปใช้แสดงผลใน Display00 
+#define D1 = {0x00,0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80,0x90} // ประกาศค่าที่นำไปใช้แสดงผลใน Display01
 
-void delay(unsigned int count)
+void delay(unsigned int count)	// โปรแกรม Delay รับ Parameter count เป็น int
 {
-	unsigned int i;
-	while(count)
-	{
-		i=100;
-		while(i>0)
+	unsigned int i;		// ประกาศตัวแปล i เป็น unsigned int
+	while(count)		// วบรอบทำงานไปเรื่อยๆถ้า count ค่าอยู่ในช่วงของ unsigned int 
+	{			// คือไม่ได้อยู่ในช่วง 0 ถึง 65535
+		i=100;		// ให้ i มีค่าเท่ากับ 100
+		while(i>0)	// วบรอบทำงานไปเรื่ือยๆถ้า i มากกว่า 0
 		{
-			i--;
-		
+			i--;	// ให้ค่า i ลดลง 1 หรือเรียกได้ว่า i = i - 1
 		}
-		count--;
+		count--;	// ให้ค่า count ลดลง 1 หรือเรียกได้ว่า count = count - 1
 	}
-}
+}				// สิ้นสุดโปรแกรม Delay
 
-void main()
+void main()			// โปรแกรมหลัก
 {
-	CON = 0x89;
-	PORT_A = 0x00;
-	unsigned int indexD0=0,indexD1=0;
-	while(1)
+	CON = 0x89; // ส่งคำสังไปที่พอร์ตควบคุม
+	PORT_A = 0x00; // ส่งคำสังไปที่พอร์ต A
+	unsigned int indexD0=0,indexD1=0; // ประกาศค่า index เริ่มต้นของค่าที่นำไปแสดงใน Display00 และ Display01
+	while(1) // วนรอบทำงานไม่รู้จบ
 	{
-		delay(1000)
-		if(PORT_C == 0xFD) // 00
+		delay(1000) // เรียกใช้โปรแกรมย่อยเพื่อหน่วงเวลา โดยให้ count มีค่า 1000 
+		if(PORT_C == 0xFC)  // เช็คค่าที่สวิตซ์ 1 ว่าเป็น 0 หรือไม่ และ ค่าที่สวิตซ์ 0 ว่าเป็น 0 หรือไม่ 
 		{
-			if (indexD0 < 8)
-				indexD0++;
-			if (indexD1 < 8)
-				indexD1++;
+			if (indexD0 > 0) // เช็คค่า indexD0 ว่า มากกว่า 0 หรือไม่
+				indexD0--;	// ลดค่า indexD0 ไปหนึ่งค่า
+			if (indexD1 > 0) // เช็คค่า indexD1 ว่า มากกว่า 0 หรือไม่
+				indexD1--; // ลดค่า indexD0 ไปหนึ่งค่า
 		}
-		if(PORT_C == 0xFC) // 
+		if(PORT_C == 0xFD)  // เช็คค่าที่สวิตซ์ 1 ว่าเป็น 0 หรือไม่ และ ค่าที่สวิตซ์ 0 ว่าเป็น 1 หรือไม่ 
 		{
-			if (indexD0 < 8)
-				indexD0++;
-			if (indexD1 < 8)
-				indexD1++;
+			if (indexD0 < 9) // เช็คค่า indexD0 ว่า น้อยกว่า 9 หรือไม่
+				indexD0++; // เพิ่มค่า indexD0 ไปหนึ่งค่า
+			if (indexD1 > 0) // เช็คค่า indexD1 ว่า มากกว่า 0 หรือไม่
+				indexD1--; // ลดค่า indexD0 ไปหนึ่งค่า
 		}
-		if(PORT_C == 0xFE)
+		if(PORT_C == 0xFE)  // เช็คค่าที่สวิตซ์ 1 ว่าเป็น 1 หรือไม่ และ ค่าที่สวิตซ์ 0 ว่าเป็น 0 หรือไม่ 
 		{
-			if (indexD0 < 8)
-				indexD0++;
-			if (indexD1 < 8)
-				indexD1++;
+			if (indexD0 > 0) // เช็คค่า indexD0 ว่า มากกว่า 0 หรือไม่
+				indexD0--; // ลดค่า indexD0 ไปหนึ่งค่า
+			if (indexD1 < 9) // เช็คค่า indexD1 ว่า น้อยกว่า 9 หรือไม่
+				indexD1++; // เพิ่มค่า indexD0 ไปหนึ่งค่า
 		}
-		if(PORT_C == 0xFF)
+		if(PORT_C == 0xFF)  // เช็คค่าที่สวิตซ์ 1 ว่าเป็น 1 หรือไม่ และ ค่าที่สวิตซ์ 0 ว่าเป็น 1 หรือไม่ 
 		{
-			if (indexD0 < 8)
-				indexD0++;
-			if (indexD1 < 8)
-				indexD1++;
+			if (indexD0 < 9) // เช็คค่า indexD0 ว่า น้อยกว่า 9 หรือไม่
+				indexD0++; // เพิ่มค่า indexD0 ไปหนึ่งค่า
+			if (indexD1 < 9) // เช็คค่า indexD1 ว่า น้อยกว่า 9 หรือไม่
+				indexD1++; // เพิ่มค่า indexD0 ไปหนึ่งค่า
 		}
-		PORT_A = D0[indexD0]+D1[indexD1];
+		PORT_A = D0[indexD0]+D1[indexD1]; // ส่งคำสังไปที่พอร์ต A
 	}
-}
+}	//สิ้นสุดโปรแกรมหลัก
