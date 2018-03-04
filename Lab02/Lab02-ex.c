@@ -4,6 +4,8 @@ nclude <reg51.h>
 #define PORT_B XBYTE [0X9001]
 #define PORT_C XBYTE [0X9002]
 #define CON XBYTE [0X9003]
+#define D0 = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09}
+#define D1 = {0x00,0x10,0x20,0x30,0x40,0x50,0x60,0x70,0x80,0x90}
 
 void delay(unsigned int count)
 {
@@ -20,60 +22,42 @@ void delay(unsigned int count)
 	}
 }
 
-void CountUp(int select)
-{
-	unsigned int i;
-	PORT_A = 0x00;
-	for(i=0;i<=9;i++)
-	{
-		delay(1000);
-		if(select == 0)
-			PORT_A++;
-		else if(select == 1)
-			PORT_A += 16;	
-	}
-	PORT_A = 0x00;
-}
-
-void CountDown(int select)
-{
-	unsigned int i;
-	if(select == 0)
-		PORT_A = 0x09;
-	else if(select == 1)
-		PORT_A = 0x90;
-	for(i=0;i<=9;i++)
-	{
-		delay(1000);
-		if(select == 0)
-			PORT_A--;
-		else if(select == 1)
-			PORT_A -= 16;
-	}
-	PORT_A = 0x00;
-}
-
 void main()
 {
 	CON = 0x89;
 	PORT_A = 0x00;
+	unsigned int indexD0=0,indexD1=0;
 	while(1)
 	{
-		if(PORT_C == 0xFD)
+		delay(1000)
+		if(PORT_C == 0xFD) // 00
 		{
-			CountDown(0);
+			if (indexD0 < 8)
+				indexD0++;
+			if (indexD1 < 8)
+				indexD1++;
 		}
-		if(PORT_C == 0xFC)
+		if(PORT_C == 0xFC) // 
 		{
-			CountUp(0);
+			if (indexD0 < 8)
+				indexD0++;
+			if (indexD1 < 8)
+				indexD1++;
 		}
 		if(PORT_C == 0xFE)
 		{
-			CountDown(1);
+			if (indexD0 < 8)
+				indexD0++;
+			if (indexD1 < 8)
+				indexD1++;
 		}
 		if(PORT_C == 0xFF)
 		{
-			CountUp(1);
+			if (indexD0 < 8)
+				indexD0++;
+			if (indexD1 < 8)
+				indexD1++;
 		}
+		PORT_A = D0[indexD0]+D1[indexD1];
 	}
 }
