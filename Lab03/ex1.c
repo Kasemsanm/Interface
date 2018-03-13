@@ -37,9 +37,9 @@ void main()
     PORT_A = 0x00;
     while (1)
     {
-        if(PORT_B == 0xFF) 
-        {
-            blink()
+        if(PORT_B == 0xFF) //เนื่องจาก ต่อ LDR ที่ PORT_B.0 และ ต่อ SW ที่ PORT_B.1
+        {		   //ดังนั้นหาก SW มีลอจิก 0 ก็จะ มีค่าเป็น 0xFC หรือ 0xFD หาก LDR มีลอจิก 1 หรือ SW มีลอจิก 1 แต่ LDR มีลอจิก 0 ก็จะมีค่า 0xFE
+            blink()	   //ซึ่งทั้งหมดนี้จะไม่เข้า PORT_B == 0xFF แต่จะไปที่ else ซึ่งจะทำให้ LED ทุกดวงดับ
         }
         else
         {
