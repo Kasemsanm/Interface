@@ -29,10 +29,11 @@ void stop()
 
 void cw(int time)
 {
+	char PORT_C_SW = PORT_C;
 	PORT_A = 0x01;
 	delay(100*time);
 	PORT_A = 0x00;
-	while(PORT_C != 0xFC){}
+	while(PORT_C != PORT_C_SW){}
 }
 void main()
 {
