@@ -50,7 +50,6 @@ void cw(unsigned int time)
 
 void main()
 {
-	unsigned int x;
 	CON = 0x90;
 	TMOD = 0x01;
 	stop();
